@@ -11,6 +11,7 @@ import UIKit
 class LoadImageViewController: UIViewController, UICollectionViewDataSource {
     var arrimg: [UIImage]?
     var loadImagDelegate: AddImageDelegate?
+    var foodImagePickerController: UIImagePickerController?
     @IBOutlet weak var testImgView: UIImageView!
     @IBOutlet weak var btnpickimg: UIButton!
     @IBOutlet weak var uicollection: UICollectionView!
@@ -19,6 +20,7 @@ class LoadImageViewController: UIViewController, UICollectionViewDataSource {
         uicollection.register(UINib(nibName: "ImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "imgcell")
         uicollection.dataSource = self
         arrimg = [UIImage]()
+         loadImagDelegate = self
     }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return arrimg?.count ?? 0
@@ -34,8 +36,37 @@ class LoadImageViewController: UIViewController, UICollectionViewDataSource {
         let pickImagController:UIImagePickerController = UIImagePickerController()
         pickImagController.delegate = self
 //        pickImagController.sourceType = .photoLibrary
-        loadImagDelegate = self
-        self.present(pickImagController, animated: true, completion: nil)
+//        loadImagDelegate = self
+        //self.present(pickImagController, animated: true, completion: nil)
+        let alChooseImage  = UIAlertController(title: "Choose image", message: "Choose image source", preferredStyle: .actionSheet)
+        let cameraAction = UIAlertAction(title: "Camera", style: .default) { (UIAlertAction) in
+            self.openCamera()
+        }
+        let photoAction = UIAlertAction(title: "Photo library", style: .default) { (UIAlertAction) in
+            self.openPhoto()
+        }
+        alChooseImage.addAction(cameraAction)
+        alChooseImage.addAction(photoAction)
+        present(alChooseImage, animated: true)
+    }
+    private func openCamera(){
+        foodImagePickerController = UIImagePickerController()
+        if !UIImagePickerController.isSourceTypeAvailable(.camera) {
+            return
+        }
+        foodImagePickerController?.delegate = self
+        foodImagePickerController?.sourceType = .camera
+        present(foodImagePickerController!, animated: true)
+    }
+    
+    private func openPhoto(){
+        foodImagePickerController = UIImagePickerController()
+        if !UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
+            return
+        }
+        foodImagePickerController?.delegate = self
+        foodImagePickerController?.sourceType = .photoLibrary
+        present(foodImagePickerController!, animated: true)
     }
 }
 extension LoadImageViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
