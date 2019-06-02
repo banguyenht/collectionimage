@@ -7,3 +7,7 @@
 //
 
 import Foundation
+import UIKit
+protocol AddImageDelegate {
+    func addImage(image: UIImage?)
+}
